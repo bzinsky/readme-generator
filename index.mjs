@@ -1,118 +1,132 @@
 import inquirer from 'inquirer';
-import fs from "fs/promise";
-import ListPrompt from 'inquirer/lib/prompts/list';
+import fs from "fs/promises";
+// import contributionTemplate  from '../contribution-template';
 
 
-let { title, description, installation, usage, license, contributing, tests, github, email } = await inquirer
-    .prompt([
-        {
-            type: "input",
-            name: "title",
-            message: "Title of the project?"
-        },
-        {
-            type: "input",
-            name: "description",
-            message: "Description of the project?"
-        },
-        {
-            type: "input",
-            name: "installation",
-            message: "Installation process for the project?"
-        },
-        {
-            type: "input",
-            name: "usage",
-            message: "Usage of the project?"
-        },
-        {
-            type: "list",
-            name: "license",
-            message: "Choose your license.",
-            choices: ['Apache 2.0', 'BSD 3-Clause License', 'MIT'],
-            filter(val) {
-                return val.toLowerCase();
-            }
-        },
-        {
-            type: "input",
-            name: "contributing",
-            message: "Who contributed to the project?."
-        },
-        {
-            type: "input",
-            name: "tests",
-            message: "What tests were done on the project? "
-        },
-        {
-            type: "input",
-            name: "github",
-            message: "Your Github account?"
-        },
-        {
-            type: "input",
-            name: "email",
-            message: "Your email address?"
-        },
+let {title, description, installation, usage, license, contribution, test, username, email, question } = await inquirer
+.prompt([
+    {
+      type: 'input',
+      name: 'title',
+      message: 'Enter the title of your project:'
+    },
+    {
+      type: 'input',
+      name: 'description',
+      message: 'Enter a brief description of your project:'
+    },
+    {
+      type: 'input',
+      name: 'installation',
+      message: 'Enter the installation process for your project:'
+    },
+    {
+      type: 'input',
+      name: 'usage',
+      message: 'Who would use this project'
+    },
+    {
+      type: 'list',
+      name: 'license',
+      message: 'Which license would you like?',
+      choices: ['MIT','Mozilla','Unlicense']
+    },
+    {
+      type: 'input',
+      name: 'contribution',
+      message: 'What are your Contribution Guidlines'
+    },
+    {
+      type: 'input',
+      name: 'test',
+      message: 'Enter the file path for your test image/gif: (ex. ./assets/ex1.jpg)'
+    },
+    {
+      type: 'input',
+      name: 'username',
+      message: 'What is you github username?'
+    },
+    {
+      type: 'input',
+      name: 'email',
+      message: 'What is your email?'
+    },
+    {
+      type: 'input',
+      name: 'question',
+      message: 'How would user contact you for any questions regarding your project?'
+    },
+
+    // Add more prompts for other sections of the README (e.g., installation, usage, etc.)
+  ])
+// Generate the README content
+const readmeContent = `
+# ${title}
+
+## Description
+
+${description}
+
+## Table of Contents
 
 
+- [Installation](#installation)
+- [Usage](#usage)
+- [License](#license)
+- [Contibution](#contribution)
+- [Tests](#tests)
+- [Questions](#questions)
+
+## Installation
+
+${installation}
+
+## Usage
+
+${usage}
+
+## License
+
+${generateLicense(license)}
 
 
-    ])
+## Contribution
 
-let readmeText = `
-
-# ${title}             ${generateLicenseBadge(license)}
-       
-## Project Description
-    ${description}
-
-    ##Table of Contents
-
-    ##Intallation
-
-    ##Usage
-
-    ## License
-    ${generateLicense(license)}
-    
-    ##Contributing
-
-    ##Tests
-
-    ##Questions
-
-    ### The third largest heading 
-    `
+${contribution}
 
 
+## Tests
+
+![A test on how to generate README](${test})
 
 
+## Questions
+
+${username}
+-----------------
+${email},
+-----------------
+${question}${email}
 
 
-fs.writeFile("README.md", readmeText)
+`;
+
+// Write the README content to a file
+fs.writeFile('README.md', readmeContent);
 
 
-function generateLicense(license) {
+function generateLicense(license){
 
-    if (license === "Apache 2.0") {
+    if(license === "MIT"){
 
-        return "[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)"
-    }
-    if (license === "BSD 3-Clause License") {
+        return `[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)`
+        }
+    else if(license === "Mozilla"){
 
-        return "[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)"
+        return `[![License: MPL 2.0](https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)`
+        }
+    else if (license === "Unlicense"){
 
-
-    }
-    if (license === "MIT") {
-
-        return "[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)"
-
-
-    }
-
-
-
-    return ``
+        return `[![License: Unlicense](https://img.shields.io/badge/license-Unlicense-blue.svg)](http://unlicense.org/)`
+        }
 }
